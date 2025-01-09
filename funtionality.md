@@ -1,7 +1,7 @@
 Jag har nog inte med Delete-funktionalitet
 
-[ ] See all Companies
-[ ] Print "overview" looks like the spreadsheet
+[x] See all Companies
+[x] Print "overview" looks like the spreadsheet
 
 Company
 [ ] Adding company 
