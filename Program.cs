@@ -10,11 +10,41 @@ MenuBuilder.CreateMenu("Välkommen! Main Menu för -\\'LIA DB PROGRAMMET'/-")
     .AddMenu("Pilla med företagen")
         .AddScreen("Lägg till nytt företag", AddNewCompany)
         .AddMenu("Gör ändringar med ett företag")
-            .AddScreen("Lägg till kontakt för företag", AddContactToCompany)
+            .AddMenu("Ändra med kontakter för företag")
+                .AddScreen("See kontakter för företag", () => ViewAllContact(ChooseCompany()))
+                .AddScreen("Lägg till kontakt för företag", AddContactToCompany)
+                .Done()
             .Done()
         .Done()
     .AddQuit("Avsluta programmet")
     .Enter();
+
+void ViewAllContact(Company? company)
+{
+    if( company is null) return;
+
+    Console.WriteLine(company.Name);
+
+    using (var context = new Context())
+    {
+        var contacts = context.ContactPersons
+            .Where(c => c.CompanyId == company.Id)
+            .Include(c => c.ContactDetails)
+            .OrderBy(c => c.Ranking)
+            .ToList();
+
+        var table = new ConsoleTable(
+            "Namn", "Position", "Ranking", "Kontakt");
+
+        foreach (var contact in contacts)
+        {
+            table.AddRow(contact.Name, contact.Position, contact.Ranking, string.Join(", ", contact.ContactDetails.Select(cd => cd.ContactInfo)));
+        }
+
+        table.Write();
+    }
+    
+}
 
 void AddContactToCompany()
 {
