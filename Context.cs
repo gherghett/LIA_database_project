@@ -23,6 +23,7 @@ public class Context : DbContext
             return Companies
                 .Include(c => c.LIAPitches)
                 .Include(c => c.InterestApps)
+                .Include(c => c.Location)
                 .Include(c => c.ContactPersons)
                     .ThenInclude(cp => cp.ContactDetails);
         }
@@ -126,6 +127,15 @@ public class Context : DbContext
             new ContactPerson { Id = 2, Name = "Helena Bragée", Position = "CEO", Ranking = 1, CompanyId = 2 },
             new ContactPerson { Id = 3, Name = "Roland Svensson", Position = "VD", Ranking = 1, CompanyId = 3 }
         );
+
+        // Seed data for Contact Details
+        modelBuilder.Entity<ContactDetail>().HasData(
+            new ContactDetail { Id = 1, ContactPersonId = 1, ContactInfo = "07070707"},
+            new ContactDetail { Id = 2, ContactPersonId = 2, ContactInfo = "07099999"},
+            new ContactDetail { Id = 3, ContactPersonId = 3, ContactInfo = "Svenson@Advacy.com"},
+            new ContactDetail { Id = 4, ContactPersonId = 3, ContactInfo = "033 - 011111"}
+        );
+
 
         // Seed data for Interest Applications
         modelBuilder.Entity<InterestApp>().HasData(
