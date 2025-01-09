@@ -4,7 +4,7 @@ Jag har nog inte med Delete-funktionalitet
 [x] Print "overview" looks like the spreadsheet
 
 Company
-[ ] Adding company 
+[x] Adding company 
 [ ] adding location or choosing an existing
 [ ] Add contact person to company
 [ ] Adding contact eprson adds the contact details aswell

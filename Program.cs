@@ -28,8 +28,12 @@ Location CreateNewLocation()
 void AddNewCompany()
 {
     string name = InputHandler.UserGet.GetString("Namn på det nya företaget");
+    string url = InputHandler.UserGet.GetString("företagets hemsida");
+
     using (var context = new Context())
     {
+
+        // Ort
         var locations = context.Locations.ToList();
         var options = locations.Concat([new Location {Id = -1, Name = "Skapa ny"}])
             .Select(l => (l.Name, l))
@@ -39,7 +43,32 @@ void AddNewCompany()
         {
             chosenLocation = CreateNewLocation();
         }
+
+        // Handledare
+        string newContactName = UserGet.GetString("Namn på kontakt");
+        string position = UserGet.GetString("Dennes position");
+        string contactInfo = UserGet.GetString("Kontakt Information");
+
+        var contact = new ContactPerson {
+            Name = newContactName,
+            Position = position,
+            Ranking = 1,
+            ContactDetails = new List<ContactDetail>(){new ContactDetail { ContactInfo = contactInfo }}
+        };
+        
+        //Create the company
+        var company = new Company {
+            Name = name,
+            Url = url,
+            Location = chosenLocation,
+            ContactPersons = [contact]
+        };
+
+        // Save
+        context.Add(company);
+        context.SaveChanges();
     }
+
 }
 
 void Overview() 
