@@ -5,6 +5,7 @@ public class Company
     public string Name { get; set; } = null!;
     public string? Url { get; set; } = null;
     public DateTime LastUpdated { get; set; }
+    public int LocationId { get; set; }
     public Location Location { get; set; } = null!;
     public ICollection<ContactPerson> ContactPersons { get; set; } = null!;
     public ICollection<InterestApp> InterestApplications { get; set; } = null!;
