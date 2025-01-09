@@ -16,12 +16,24 @@ public class Context : DbContext
     public DbSet<Class> Classes { get; set; } = null!;
     public DbSet<Employment> Employments { get; set; } = null!;
 
+    public IQueryable<Company> CompaniesWithIncludes
+    {
+        get
+        {
+            return Companies
+                .Include(c => c.LIAPitches)
+                .Include(c => c.InterestApps)
+                .Include(c => c.ContactPersons)
+                    .ThenInclude(cp => cp.ContactDetails);
+        }
+    }
+
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         optionsBuilder.UseSqlite("Data Source=LIA.db");
     }
 
-     protected override void OnModelCreating(ModelBuilder modelBuilder)
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Company>(entity =>
         {
@@ -51,7 +63,7 @@ public class Context : DbContext
         modelBuilder.Entity<InterestApp>(entity =>
         {
             entity.HasOne(e => e.Company)
-                    .WithMany(c => c.InterestApplications);
+                    .WithMany(c => c.InterestApps);
         });
 
         modelBuilder.Entity<LiaPitch>(entity =>
