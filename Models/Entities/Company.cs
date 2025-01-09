@@ -2,13 +2,12 @@ namespace Models.Entities;
 public class Company
 {
     public int Id { get; set; }
-    public string Name { get; set; }
-    public string Url { get; set; }
+    public string Name { get; set; } = null!;
+    public string? Url { get; set; } = null;
     public DateTime LastUpdated { get; set; }
-    public int? LocationId { get; set; }
-    // public Location Location { get; set; }
-    // public ICollection<ContactPerson> ContactPersons { get; set; }
-    // public ICollection<InterestApplication> InterestApplications { get; set; }
-    // public ICollection<LIAPitch> LIAPitches { get; set; }
-    // public ICollection<Employment> Employments { get; set; }
+    public Location Location { get; set; } = null!;
+    public ICollection<ContactPerson> ContactPersons { get; set; } = null!;
+    public ICollection<InterestApp> InterestApplications { get; set; } = null!;
+    public ICollection<LiaPitch> LIAPitches { get; set; } = null!;
+    public ICollection<Employment> Employments { get; set; } = null!;
 }
