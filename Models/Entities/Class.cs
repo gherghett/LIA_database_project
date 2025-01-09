@@ -1,12 +1,11 @@
 namespace Models.Entities;
 
-public class Student
+public class Class
 {
     public int Id { get; set; }
     public string Name { get; set; } = null!;
+    public int Year { get; set; }
     public int ProgramId { get; set; }
-    public int ClassId { get; set; }
     public Program Program { get; set; } = null!;
-    public Class Class { get; set; } = null!;
-    // public ICollection<Employment> Employments { get; set; }
+    public ICollection<Student> Students { get; set; } = null!;
 }
