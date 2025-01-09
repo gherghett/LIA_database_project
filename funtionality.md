@@ -5,9 +5,9 @@ Jag har nog inte med Delete-funktionalitet
 
 Company
 [x] Adding company 
-[ ] adding location or choosing an existing
-[ ] Add contact person to company
-[ ] Adding contact eprson adds the contact details aswell
+[x] adding location or choosing an existing
+[x] Add contact person to company
+[x] Adding contact eprson adds the contact details aswell
 [ ] Modify base info
 
 [ ]Add InterestApp
