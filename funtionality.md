@@ -8,14 +8,14 @@ Company
 [x] adding location or choosing an existing
 [x] Add contact person to company
 [x] Adding contact eprson adds the contact details aswell
-[ ] Modify base info
+[x] Modify base info
 
-[ ]Add InterestApp
+[ ] Add InterestApp
 [ ] Add LiaPitch
 [ ] Mark Liapitch as hasoccurred
 
-[ ]Add empployment
-[ ]delete emplyment
+[ ] Add empployment
+[ ] delete emplyment
 
 Student
 [ ] Add programs

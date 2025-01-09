@@ -7,17 +7,39 @@ Console.WriteLine("Hello, Krister!");
     
 MenuBuilder.CreateMenu("Välkommen! Main Menu för -\\'LIA DB PROGRAMMET'/-")
     .AddScreen("See överblick", Overview)
-    .AddMenu("Pilla med företagen")
+    .AddMenu("Företag")
         .AddScreen("Lägg till nytt företag", AddNewCompany)
-        .AddMenu("Gör ändringar med ett företag")
-            .AddMenu("Ändra med kontakter för företag")
-                .AddScreen("See kontakter för företag", () => ViewAllContact(ChooseCompany()))
-                .AddScreen("Lägg till kontakt för företag", AddContactToCompany)
+        .AddMenu("Gör ändringar med ett existerande företag")
+            .AddScreen("Ändra bas-info", () => ChangeCompanyBaseInfo(ChooseCompany()))
+            .AddMenu("Hantera kontakter")
+                .AddScreen("See kontakter", () => ViewAllContact(ChooseCompany()))
+                .AddScreen("Lägg till kontakt", AddContactToCompany)
                 .Done()
             .Done()
         .Done()
     .AddQuit("Avsluta programmet")
     .Enter();
+
+void ChangeCompanyBaseInfo(Company? company)
+{
+    if (company is null) return;
+
+
+    using (var context = new Context())
+    {
+        company = context.Companies.Where(c => c.Id == company.Id).FirstOrDefault();
+        if(company is null) throw new Exception("Kunde inte hitta företaget i databasen");
+
+        MenuBuilder.CreateMenu("Vad vill du ändra?")
+            .AddScreen($"Ändra namn", () => company.Name = UserGet.GetString("Nytt namn"))
+            .AddScreen($"Ändra url", () => company.Url = UserGet.GetString("Ny url"))
+            .AddQuit("Färdig")
+        .Enter();
+
+        company.LastUpdated = DateTime.Now;
+        context.SaveChanges();
+    }
+}
 
 void ViewAllContact(Company? company)
 {
