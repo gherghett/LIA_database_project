@@ -11,7 +11,7 @@ Company
 [x] Modify base info
 
 [x] Add InterestApp
-[ ] Add LiaPitch
+[x] Add LiaPitch
 [x] Mark Liapitch as hasoccurred
 
 [ ] Add empployment

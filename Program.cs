@@ -43,7 +43,7 @@ void ChangeLiaPitch(Company? company)
                 }
                 else
                 {
-                    context.Add(new InterestApp { Year = year.ToString(), CompanyId = company.Id });
+                    context.Add(new LiaPitch { Year = year.ToString(), CompanyId = company.Id });
                     context.SaveChanges();
                     Console.WriteLine($"{year} lades till till {company.Name}");
                 }
