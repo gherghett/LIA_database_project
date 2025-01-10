@@ -23,5 +23,5 @@ Student
 [ ] Modify programs
 [ ] Add classes
 [ ] Modify classes
-[ ] Add student
+[x] Add student
 [ ] modify student

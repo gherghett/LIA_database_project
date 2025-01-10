@@ -23,9 +23,41 @@ MenuBuilder.CreateMenu("Välkommen! Main Menu för -\\'LIA DB PROGRAMMET'/-")
         .Done()
     .AddMenu("Skola")
         .AddScreen("Se Överblick", Overview)
+        .AddScreen("Lägg till student", AddStudent)
+        .AddScreen("Lägg till anställning till fäljd av LIA", AddEmployment)
         .Done()
     .AddQuit("Avsluta programmet")
     .Enter();
+
+void AddStudent()
+{
+    using(var context = factory.GetContext())
+    {
+        var programs = context.StudyPrograms;
+        var options = programs.ToList()
+            .Select(p => (p.Name, p))
+            .ToArray();
+        var chosenProgram = Chooser.ChooseAlternative<StudyProgram>("Välj program", options);
+        var classes = context.Classes.Where(c => c.StudyProgramId == chosenProgram.Id);
+        var classOptions = classes.ToList()
+            .Select(c => (c.Name, c))
+            .ToArray();
+        var chosenClass = Chooser.ChooseAlternative<Class>("Välj Klass",classOptions);
+        var namn = UserGet.GetString("Namn på student");
+        var newStudent = new Student {
+            Name = namn,
+            StudyProgramId = chosenProgram.Id,
+            ClassId = chosenClass.Id
+        };
+        context.Add(newStudent);
+        context.SaveChanges();
+    }
+}
+
+void AddEmployment()
+{
+    throw new NotImplementedException();
+}
 
 void Overview()
 {
