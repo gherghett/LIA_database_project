@@ -56,7 +56,33 @@ void AddStudent()
 
 void AddEmployment()
 {
-    throw new NotImplementedException();
+    using(var context = factory.GetContext())
+    {
+        var programs = context.StudyPrograms;
+        var options = programs.ToList()
+            .Select(p => (p.Name, p))
+            .ToArray();
+        var chosenProgram = Chooser.ChooseAlternative<StudyProgram>("Välj program", options);
+        var classes = context.Classes.Where(c => c.StudyProgramId == chosenProgram.Id);
+        var classOptions = classes.ToList()
+            .Select(c => (c.Name, c))
+            .ToArray();
+        var chosenClass = Chooser.ChooseAlternative<Class>("Välj Klass",classOptions);
+        var students = context.Students.Where(s => s.ClassId == chosenClass.Id);
+        var studentOptions = students.ToList()
+            .Select(s => (s.Name, s))
+            .ToArray();
+        var chosenStudent = Chooser.ChooseAlternative<Student>("Välj student",studentOptions);
+        var company = companyManager.ChooseCompany();
+        if(company is null) return;
+        var newEmployment = new Employment {
+            StudentId = chosenStudent.Id,
+            CompanyId = company.Id,
+            EmploymentDate = UserGet.GetDateTime("När skedde eller sker anställningen?")
+        };
+        context.Add(newEmployment);
+        context.SaveChanges();
+    }
 }
 
 void Overview()

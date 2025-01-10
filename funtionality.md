@@ -15,7 +15,7 @@ Company
 [x] Mark Liapitch as hasoccurred
 
 [x] studentöverblick
-[ ] Add empployment
+[x] Add empployment
 [ ] delete emplyment
 
 Student

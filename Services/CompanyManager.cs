@@ -243,7 +243,7 @@ public class CompanyManager
     }
 
 
-    Company? ChooseCompany()
+    public Company? ChooseCompany()
     {
         using (var context = factory.GetContext())
         {
