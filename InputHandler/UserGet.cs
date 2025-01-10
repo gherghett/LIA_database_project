@@ -1,6 +1,20 @@
 namespace InputHandler;
 static class UserGet
 {
+    public static int GetYear(string prompt)
+    {
+        // int current_year = DateTime.Now.Year;
+        while (true)
+        {
+            Prompt(prompt);
+            int output;
+            if (int.TryParse(Console.ReadLine(), out output) )
+            {
+                return output;
+            }
+            Console.WriteLine("Skriv ett år.");
+        }
+    }
     public static DateOnly GetDateOnly(string prompt)
     {
         while (true)
@@ -120,7 +134,7 @@ static class UserGet
         Prompt(prompt);
         return Console.ReadLine()!;
     }
-    
+
     //The format of the prompt
     private static void Prompt(string prompt) =>
         Console.Write($"{prompt}: ");
