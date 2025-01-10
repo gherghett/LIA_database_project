@@ -12,7 +12,7 @@ Company
 
 [x] Add InterestApp
 [ ] Add LiaPitch
-[ ] Mark Liapitch as hasoccurred
+[x] Mark Liapitch as hasoccurred
 
 [ ] Add empployment
 [ ] delete emplyment

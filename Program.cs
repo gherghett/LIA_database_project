@@ -11,6 +11,7 @@ MenuBuilder.CreateMenu("Välkommen! Main Menu för -\\'LIA DB PROGRAMMET'/-")
         .AddScreen("Lägg till nytt företag", AddNewCompany)
         .AddScreen("Ändra bas-info", () => ChangeCompanyBaseInfo(ChooseCompany()))
         .AddScreen("Hantera Intresseanmälan", () => ChangeInterestApp(ChooseCompany()))
+        .AddScreen("Hantera LiaPitch", () => ChangeLiaPitch(ChooseCompany()))
         .AddMenu("Hantera kontakter")
             .AddScreen("See kontakter", () => ViewAllContact(ChooseCompany()))
             .AddScreen("Lägg till kontakt", AddContactToCompany)
@@ -18,6 +19,54 @@ MenuBuilder.CreateMenu("Välkommen! Main Menu för -\\'LIA DB PROGRAMMET'/-")
         .Done()
     .AddQuit("Avsluta programmet")
     .Enter();
+
+void ChangeLiaPitch(Company? company)
+{
+    if (company is null) return;
+
+    using (var context = new Context())
+    {
+        var pitches = context.LiaPitches.Where(i => i.CompanyId == company.Id).ToList();
+        Console.WriteLine($"{company.Name} har lia pitcher: {String.Join(", ", pitches.Select(a => a.Year + $"{(a.HasOccurred ? "x" : "o")}"))}");
+        MenuBuilder.CreateMenu("")
+            .AddScreen("Lägg till planerad pitch", () =>
+            {
+                int current_year = DateTime.Now.Year;
+                int year;
+                do
+                {
+                    year = UserGet.GetYear("Ange detta år eller framtida år");
+                } while (year < current_year);
+                if (pitches.Any(i => i.Year == year.ToString()))
+                {
+                    Console.WriteLine("Detta årets finns redan tillagt.");
+                }
+                else
+                {
+                    context.Add(new InterestApp { Year = year.ToString(), CompanyId = company.Id });
+                    context.SaveChanges();
+                    Console.WriteLine($"{year} lades till till {company.Name}");
+                }
+            })
+            .AddScreen("Markera pitch som har ägt rum",  () => {
+                if(!pitches.Any(lp => !lp.HasOccurred)) 
+                {
+                    Console.WriteLine("Finns ingen pitch som inte är markerad som ägt rum");
+                }
+                else
+                {
+                    var options = pitches
+                        .Select(p => (p.Year, p))
+                        .ToArray();
+                    var toMark = Chooser.ChooseAlternative<LiaPitch>("Välj pitch att markera", options);
+                    toMark.HasOccurred = true;
+                    context.SaveChanges();
+                }
+            })
+            .AddQuit("Tillbaka")
+        .Enter();
+    }
+}
 
 void ChangeInterestApp(Company? company)
 {
@@ -46,12 +95,10 @@ void ChangeInterestApp(Company? company)
                     context.SaveChanges();
                     Console.WriteLine($"{year} lades till till {company.Name}");
                 }
-
             })
             .AddQuit("Tillbaka")
         .Enter();
     }
-
 }
 
 void ChangeCompanyBaseInfo(Company? company)
