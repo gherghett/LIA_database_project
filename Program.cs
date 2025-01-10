@@ -4,21 +4,55 @@ using Models.Entities;
 using ConsoleTables;
 
 Console.WriteLine("Hello, Krister!");
-    
+
 MenuBuilder.CreateMenu("Välkommen! Main Menu för -\\'LIA DB PROGRAMMET'/-")
     .AddScreen("See överblick", Overview)
     .AddMenu("Företag")
         .AddScreen("Lägg till nytt företag", AddNewCompany)
-        .AddMenu("Gör ändringar med ett existerande företag")
-            .AddScreen("Ändra bas-info", () => ChangeCompanyBaseInfo(ChooseCompany()))
-            .AddMenu("Hantera kontakter")
-                .AddScreen("See kontakter", () => ViewAllContact(ChooseCompany()))
-                .AddScreen("Lägg till kontakt", AddContactToCompany)
-                .Done()
+        .AddScreen("Ändra bas-info", () => ChangeCompanyBaseInfo(ChooseCompany()))
+        .AddScreen("Hantera Intresseanmälan", () => ChangeInterestApp(ChooseCompany()))
+        .AddMenu("Hantera kontakter")
+            .AddScreen("See kontakter", () => ViewAllContact(ChooseCompany()))
+            .AddScreen("Lägg till kontakt", AddContactToCompany)
             .Done()
         .Done()
     .AddQuit("Avsluta programmet")
     .Enter();
+
+void ChangeInterestApp(Company? company)
+{
+    if (company is null) return;
+
+    using (var context = new Context())
+    {
+        var apps = context.InterestApps.Where(i => i.CompanyId == company.Id);
+        Console.WriteLine($"{company.Name} has interest for year(s): {String.Join(", ", apps.Select(a => a.Year))}");
+        MenuBuilder.CreateMenu("")
+            .AddScreen("Lägg till anmälan", () =>
+            {
+                int current_year = DateTime.Now.Year;
+                int year;
+                do
+                {
+                    year = UserGet.GetYear("Ange detta år eller framtida år");
+                } while (year < current_year);
+                if (apps.Any(i => i.Year == year.ToString()))
+                {
+                    Console.WriteLine("Detta årets finns redan tillagt.");
+                }
+                else
+                {
+                    context.Add(new InterestApp { Year = year.ToString(), CompanyId = company.Id });
+                    context.SaveChanges();
+                    Console.WriteLine($"{year} lades till till {company.Name}");
+                }
+
+            })
+            .AddQuit("Tillbaka")
+        .Enter();
+    }
+
+}
 
 void ChangeCompanyBaseInfo(Company? company)
 {
@@ -28,7 +62,7 @@ void ChangeCompanyBaseInfo(Company? company)
     using (var context = new Context())
     {
         company = context.Companies.Where(c => c.Id == company.Id).FirstOrDefault();
-        if(company is null) throw new Exception("Kunde inte hitta företaget i databasen");
+        if (company is null) throw new Exception("Kunde inte hitta företaget i databasen");
 
         MenuBuilder.CreateMenu("Vad vill du ändra?")
             .AddScreen($"Ändra namn", () => company.Name = UserGet.GetString("Nytt namn"))
@@ -43,7 +77,7 @@ void ChangeCompanyBaseInfo(Company? company)
 
 void ViewAllContact(Company? company)
 {
-    if( company is null) return;
+    if (company is null) return;
 
     Console.WriteLine(company.Name);
 
@@ -65,7 +99,7 @@ void ViewAllContact(Company? company)
 
         table.Write();
     }
-    
+
 }
 
 void AddContactToCompany()
@@ -89,12 +123,12 @@ void AddContactToCompany()
 
 }
 
-Company? ChooseCompany() 
+Company? ChooseCompany()
 {
     using (var context = new Context())
     {
         var companies = context.Companies.ToList();
-        var options = companies.Concat([new Company{Name = "Tillbaka", Id = -1}])
+        var options = companies.Concat([new Company { Name = "Tillbaka", Id = -1 }])
             .Select(c => (c.Name, c))
             .ToArray();
         var chosenCompany = Chooser.ChooseAlternative<Company>("Välj ett av företagen", options);
@@ -105,7 +139,7 @@ Company? ChooseCompany()
 Location CreateNewLocation()
 {
     string name = UserGet.GetString("Namn på orten");
-    var newLocation = new Location {Name = name};
+    var newLocation = new Location { Name = name };
     return newLocation;
 }
 
@@ -115,11 +149,12 @@ ContactPerson CreateContactPerson()
     string position = UserGet.GetString("Dennes position");
     string contactInfo = UserGet.GetString("Kontakt Information");
 
-    var contact = new ContactPerson {
+    var contact = new ContactPerson
+    {
         Name = newContactName,
         Position = position,
         Ranking = 1,
-        ContactDetails = new List<ContactDetail>(){new ContactDetail { ContactInfo = contactInfo }}
+        ContactDetails = new List<ContactDetail>() { new ContactDetail { ContactInfo = contactInfo } }
     };
 
     return contact;
@@ -136,7 +171,7 @@ void AddNewCompany()
         // Ort
         var locations = context.Locations.ToList();
         // Vi lägger till en Location som representerar att den vi söker inte finns
-        var options = locations.Concat([new Location {Id = -1, Name = "Skapa ny"}])
+        var options = locations.Concat([new Location { Id = -1, Name = "Skapa ny" }])
             .Select(l => (l.Name, l))
             .ToArray();
         var chosenLocation = Chooser.ChooseAlternative<Location>("Välj en ort för företaget, eller skapa en ny", options);
@@ -147,9 +182,10 @@ void AddNewCompany()
 
         // Handledare
         var contact = CreateContactPerson();
-        
+
         //Create the company
-        var company = new Company {
+        var company = new Company
+        {
             Name = name,
             Url = url,
             Location = chosenLocation,
@@ -163,7 +199,7 @@ void AddNewCompany()
 
 }
 
-void Overview() 
+void Overview()
 {
     using (var context = new Context())
     {

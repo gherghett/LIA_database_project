@@ -10,7 +10,7 @@ Company
 [x] Adding contact eprson adds the contact details aswell
 [x] Modify base info
 
-[ ] Add InterestApp
+[x] Add InterestApp
 [ ] Add LiaPitch
 [ ] Mark Liapitch as hasoccurred
 
