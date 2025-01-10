@@ -161,6 +161,7 @@ public class CompanyManager
                     else
                     {
                         context.Add(new InterestApp { Year = year.ToString(), CompanyId = company.Id });
+                        company.LastUpdated = DateTime.Now;
                         context.SaveChanges();
                         Console.WriteLine($"{year} lades till till {company.Name}");
                     }
@@ -239,6 +240,7 @@ public class CompanyManager
             context.Add(newContact);
             context.SaveChanges();
         }
+        LastUpdatedNow(company.Id);
 
     }
 
@@ -277,6 +279,17 @@ public class CompanyManager
         };
 
         return contact;
+    }
+
+    void LastUpdatedNow(int companyId)
+    {
+        using(var context = factory.GetContext())
+        {
+            var company = context.Companies.Where(c => c.Id == companyId).SingleOrDefault();
+            if(company is null) return;
+            company.LastUpdated = DateTime.Now;
+            context.SaveChanges();
+        }
     }
 
 }

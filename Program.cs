@@ -9,7 +9,6 @@ ContextFactory factory = new();
 Services.CompanyManager companyManager = new(factory);
 Services.SchoolManager schoolManager = new(factory, companyManager);
 
-
 MenuBuilder.CreateMenu("Välkommen! Main Menu för -\\'LIA DB PROGRAMMET'/-")
     .AddScreen("See överblick", companyManager.Overview)
     .AddMenu("Företag")
