@@ -21,14 +21,35 @@ MenuBuilder.CreateMenu("Välkommen! Main Menu för -\\'LIA DB PROGRAMMET'/-")
             .AddScreen("Lägg till kontakt", companyManager.AddContactToCompany)
             .Done()
         .Done()
+    .AddMenu("Skola")
+        .AddScreen("Se Överblick", Overview)
+        .Done()
     .AddQuit("Avsluta programmet")
     .Enter();
 
+void Overview()
+{
+    using(var context = factory.GetContext())
+    {
+        var classes  = context.Classes
+            .Include(c => c.Students)
+                .ThenInclude(s => s.Employments)
+                    .ThenInclude( e => e.Company);
+         var table = new ConsoleTable(
+            "Klass", "Studenter", "Anställningar till följd av LIA" );
+        
+        foreach( var c in classes )
+        {
+            var employments = c.Students
+                .Where(s => s.Employments.Any())
+                .SelectMany(s => s.Employments)
+                .Select(e => e.Company)
+                .Distinct()
+                .Select(c => c.Name);
+                
+            table.AddRow(c.Name, c.Students.Count(), string.Join(", ", employments));
+        }
 
-
-
-
-
-
-
-
+        table.Write();
+    }
+}

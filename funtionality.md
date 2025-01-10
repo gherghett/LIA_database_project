@@ -14,6 +14,7 @@ Company
 [x] Add LiaPitch
 [x] Mark Liapitch as hasoccurred
 
+[x] studentöverblick
 [ ] Add empployment
 [ ] delete emplyment
 
